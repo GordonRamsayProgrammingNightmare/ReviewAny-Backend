@@ -3,14 +3,11 @@ const Schema = mongoose.Schema;
 const crypto = require('crypto');
 const config = require('../config');
 
-
 const User = new Schema({
 	username: String,
-	password: String,
-	admin: { type: Boolean, default: false }
+	password: String
 });
 
-// create new User document
 // create new User document
 User.statics.create = function(username, password) {
 	const encrypted = crypto.createHmac('sha1', config.secret)

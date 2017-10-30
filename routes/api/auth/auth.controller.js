@@ -4,35 +4,18 @@ const jwt = require('jsonwebtoken');
 exports.register = (req, res) => {
 	const { username, password } = req.body;
 
-	// create a new user if does not exist
-	const create = (user) => {
-		if (user) {
-			throw new Error('username exists');
-		} else {
-			return User.create(username, password);
-		}
-	};
-
-	// respond to the client
-	const respond = (isAdmin) => {
-		res.json({
-			message: 'registered successfully',
-			admin: isAdmin ? true : false
+	User.findOne({ username: username }, function(err, user) {
+		if (err) return res.status(500).json({ error: err });
+		if (user) return res.status(406).json({ message:'username exists' });
+		let newUser = new User({
+			username,
+			password
 		});
-	};
-
-	// run when there is an error (username exists)
-	const onError = (error) => {
-		res.status(409).json({
-			message: error.message
+		newUser.save(function(err) {
+			if (err) return res.status(500).json({ error:err });
+			return res.status(200).json({ message: 'registered successfully' });
 		});
-	};
-
-	// check username duplication
-	User.findOneByUsername(username)
-		.then(create)
-		.then(respond)
-		.catch(onError);
+	})
 };
 
 exports.login = (req, res) => {
@@ -58,7 +41,7 @@ exports.login = (req, res) => {
 						secret,
 						{
 							expiresIn: '7d',
-							issuer: 'velopert.com',
+							issuer: 'yoonjeewoo',
 							subject: 'userInfo'
 						}, (err, token) => {
 							if (err) reject(err);
