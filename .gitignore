@@ -1,0 +1,5 @@
+.idea/*
+node_modules
+screenlog.0
+config.js
+.DS_Store
