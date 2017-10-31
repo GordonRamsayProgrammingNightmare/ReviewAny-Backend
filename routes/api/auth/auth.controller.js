@@ -1,21 +1,25 @@
 const User = require('../../../models/user');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const config = require('../../../config');
 
 exports.register = (req, res) => {
 	const { username, password } = req.body;
-
+	const encrypted = crypto.createHmac('sha1', config.secret)
+		.update(password)
+		.digest('base64');
 	User.findOne({ username: username }, function(err, user) {
 		if (err) return res.status(500).json({ error: err });
 		if (user) return res.status(406).json({ message:'username exists' });
 		let newUser = new User({
 			username,
-			password
+			password: encrypted
 		});
 		newUser.save(function(err) {
 			if (err) return res.status(500).json({ error:err });
 			return res.status(200).json({ message: 'registered successfully' });
 		});
-	})
+	});
 };
 
 exports.login = (req, res) => {

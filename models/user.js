@@ -8,21 +8,6 @@ const User = new Schema({
 	password: String
 });
 
-// create new User document
-User.statics.create = function(username, password) {
-	const encrypted = crypto.createHmac('sha1', config.secret)
-		.update(password)
-		.digest('base64');
-
-	const user = new this({
-		username,
-		password: encrypted
-	});
-
-	// return the Promise
-	return user.save();
-};
-
 // find one user by using username
 User.statics.findOneByUsername = function(username) {
 	return this.findOne({
@@ -40,9 +25,5 @@ User.methods.verify = function(password) {
 	return this.password === encrypted;
 };
 
-User.methods.assignAdmin = function() {
-	this.admin = true;
-	return this.save();
-};
 
 module.exports = mongoose.model('User', User);
