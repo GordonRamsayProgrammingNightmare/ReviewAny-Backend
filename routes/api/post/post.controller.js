@@ -1,6 +1,7 @@
 const Post = require('../../../models/post');
 const User = require('../../../models/user');
 
+// Post 생성
 exports.makePost = (req, res) => {
 	const { title, content, rate, picUrl } = req.body;
 	User.findOne({ _id : req.decoded._id }, function(err, user) {
