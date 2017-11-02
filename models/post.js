@@ -6,9 +6,12 @@ const ObjectId = Schema.ObjectId;
 const Post = new Schema({
 	title: String,
 	content: String,
-	rate: Number,
 	picUrl: String,
-	writtenBy: { type: ObjectId, ref:'User' }
+	tags: [{ tag: String }],
+	writtenBy: { type: ObjectId, ref:'User' },
+	writtenAt: Date,
+	likeCnt: { type: Number, default: 0 },
+	viewCnt: { type: Number, default: 0 }
 });
 
 module.exports = mongoose.model('Post', Post);

@@ -3,7 +3,7 @@ const User = require('../../../models/user');
 
 // Post 생성
 exports.makePost = (req, res) => {
-	const { title, content, rate, picUrl } = req.body;
+	const { title, content, rate, picUrl, tags } = req.body;
 	User.findOne({ _id : req.decoded._id }, function(err, user) {
 		if (err) return res.status(500).json({ error: err });
 		if (!user) return res.status(404).json({ message:'no such user' });
@@ -12,6 +12,7 @@ exports.makePost = (req, res) => {
 			content,
 			rate,
 			picUrl,
+			tags,
 			writtenBy: req.decoded._id
 		});
 		post.save(function(err) {
@@ -30,6 +31,17 @@ exports.getPost = (req, res) => {
 			post: post
 		});
 	});
+};
+
+exports.getAllPosts = (req, res) => {
+	Post.find({}).sort( { 'writtenAt':-1 } )
+		.then(
+			posts => {
+				res.status(200).json({
+					posts
+				})
+			}
+		)
 };
 
 exports.deletePost = (req, res) => {

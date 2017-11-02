@@ -51,8 +51,8 @@ exports.login = (req, res) => {
 					return res.status(200).json({
 						message: 'logged in successfully',
 						token
-					})
-				})
+					});
+				});
 		} else {
 			return res.status(406).json({ message:'login failed' });
 		}

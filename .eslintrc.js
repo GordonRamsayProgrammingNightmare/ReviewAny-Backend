@@ -16,6 +16,7 @@ module.exports = {
 		"space-before-function-paren": ["error", "never"],
 		"space-before-blocks": ["error", "always"],
 		"no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 1 }],
+		"no-console": 0,
 		"indent": [
 			"error",
 			"tab",
