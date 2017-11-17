@@ -10,13 +10,12 @@ exports.makePost = (req, res) => {
 		let post = new Post({
 			title,
 			content,
-			picUrl,
 			tags,
 			writtenBy: req.decoded._id
 		});
 		post.save(function(err) {
 			if (err) return res.status(500).json({ error:err });
-			return res.status(200).json({ message: 'post successfully saved' });
+			return res.status(200).json({ message: 'post successfully saved'});
 		});
 	});
 };
