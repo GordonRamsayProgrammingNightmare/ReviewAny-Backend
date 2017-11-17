@@ -10,7 +10,6 @@ exports.makePost = (req, res) => {
 		let post = new Post({
 			title,
 			content,
-			rate,
 			picUrl,
 			tags,
 			writtenBy: req.decoded._id
