@@ -23,8 +23,8 @@ server.use(function(req, res, next) {
 	next();
 });
 // parse JSON and url-encoded query
-server.use(bodyParser.json());
-server.use(bodyParser.urlencoded({ extended:true,limit:1024*1024*20 }));
+server.use(bodyParser.json({limit: '50mb'}));
+server.use(bodyParser.urlencoded({ extended:true,limit:'50mb' }));
 
 
 // print the request log on console
