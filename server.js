@@ -24,7 +24,7 @@ server.use(function(req, res, next) {
 });
 // parse JSON and url-encoded query
 server.use(bodyParser.json());
-server.use(bodyParser.urlencoded({ extended: true }));
+server.use(bodyParser.urlencoded({ extended: '2mb' }));
 
 
 // print the request log on console
