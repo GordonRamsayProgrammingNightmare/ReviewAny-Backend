@@ -7,6 +7,7 @@ exports.makePost = (req, res) => {
 	User.findOne({ _id : req.decoded._id }, function(err, user) {
 		if (err) return res.status(500).json({ error: err });
 		if (!user) return res.status(404).json({ message:'no such user' });
+		console.log(base64);
 		let post = new Post({
 			title,
 			content,
