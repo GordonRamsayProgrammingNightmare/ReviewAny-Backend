@@ -3,7 +3,7 @@ const User = require('../../../models/user');
 
 // Post 생성
 exports.makePost = (req, res) => {
-	const { title, content, rate, picUrl, tags } = req.body;
+	const { title, content, base64, tags } = req.body;
 	User.findOne({ _id : req.decoded._id }, function(err, user) {
 		if (err) return res.status(500).json({ error: err });
 		if (!user) return res.status(404).json({ message:'no such user' });

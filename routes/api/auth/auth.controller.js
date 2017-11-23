@@ -5,7 +5,7 @@ const config = require('../../../config');
 
 // Register
 exports.register = (req, res) => {
-	const { username, password } = req.body;
+	const { username, password ,saySomething} = req.body;
 	const encrypted = crypto.createHmac('sha1', config.secret)
 		.update(password)
 		.digest('base64');
@@ -14,7 +14,9 @@ exports.register = (req, res) => {
 		if (user) return res.status(406).json({ message:'username exists' });
 		let newUser = new User({
 			username,
-			password: encrypted
+			password: encrypted,
+			saySomething,
+			profileImg : 'https://s3.ap-northeast-2.amazonaws.com/reviewany/KakaoTalk_2017-09-25-16-51-00_Photo_65.jpeg'
 		});
 		newUser.save(function(err) {
 			if (err) return res.status(500).json({ error:err });
