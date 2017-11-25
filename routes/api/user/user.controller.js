@@ -1,4 +1,5 @@
 const User = require('../../../models/user');
+const Post = require('../../../models/post');
 
 exports.getUserById = (req, res) => {
 	// const { user_id } = req.params;
