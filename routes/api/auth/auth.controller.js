@@ -9,7 +9,7 @@ exports.register = (req, res) => {
 	const encrypted = crypto.createHmac('sha1', config.secret)
 		.update(password)
 		.digest('base64');
-	User.findOne({ username: username }, function(err, user) {
+	User.findOne({ username: username },(err, user) => {
 		if (err) return res.status(500).json({ error: err });
 		if (user) return res.status(406).json({ message:'username exists' });
 		let newUser = new User({
@@ -18,7 +18,7 @@ exports.register = (req, res) => {
 			saySomething,
 			profileImg : 'https://s3.ap-northeast-2.amazonaws.com/reviewany/KakaoTalk_2017-09-25-16-51-00_Photo_65.jpeg'
 		});
-		newUser.save(function(err) {
+		newUser.save( (err) => {
 			if (err) return res.status(500).json({ error:err });
 			return res.status(200).json({ message: 'registered successfully' });
 		});
@@ -30,7 +30,7 @@ exports.login = (req, res) => {
 	const { username, password } = req.body;
 	const secret = req.app.get('jwt-secret');
 
-	User.findOne({ username: username }, function(err, user) {
+	User.findOne({ username: username }, (err, user) => {
 		if (err) return res.status(500).json({ error: err });
 		if (!user) return res.status(406).json({ message:'login failed' });
 		const encrypted = crypto.createHmac('sha1', config.secret)
