@@ -22,4 +22,5 @@ router.post('/like/:post_id', controller.likePost);
 router.get('/like', controller.getMyLikePost)
 // 포스트를 본다.
 router.post('/view/:post_id', controller.viewPost);
+
 module.exports = router;

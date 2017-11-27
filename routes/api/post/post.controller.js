@@ -1,7 +1,6 @@
 const Post = require('../../../models/post');
 const User = require('../../../models/user');
 const AWS = require('aws-sdk');
-// const ObjectId = Schema.ObjectId;
 AWS.config.region = 'us-east-1';
 const s3 = new AWS.S3();
 // Post 생성
@@ -24,34 +23,20 @@ exports.makePost = (req, res) => {
 		});
 		post.save(function(err, post) {
 			if (err) return res.status(500).json({ error:err });
-			// return res.status(200).json({ message: 'post successfully saved'});
 			let buf = new Buffer(base64.replace(/^data:image\/\w+;base64,/, ''), 'base64');
 			user.myPost.push(post._id);
-			user.save(function(err){
+			user.save((err) => {
 				s3.putObject({ Bucket: 'fashionpobucket', Key: d.getFullYear()+'_'+d.getMonth()+'_'+d.getDate()+'_'+d.getTime()+'_'+d.getSeconds()+'_'+req.decoded._id+'.jpg', Body: buf, ACL: 'public-read' }, function(err) {
-							if (err) {
-								return res.send({ message: err });
-							} else {
-								return res.send({ message: 'upload success' });
-							}
-						});
+					if (err) {
+						return res.send({ message: err });
+					} else {
+						return res.send({ message: 'upload success' });
+					}
+				});
 			})
-
 		});
-
 	});
 };
-
-// exports.getPost = (req, res) => {
-// 	const { post_id } = req.params;
-// 	Post.findOne({ _id : post_id }, function(err, post) {
-// 		if (err) return res.status(500).json({ error: err });
-// 		if (!post) return res.status(404).json({ message:'no such post' });
-// 		return res.status(200).json({
-// 			post: post
-// 		});
-// 	});
-// };
 
 exports.getAllPosts = (req, res) => {
 	Post.find({}).sort( { 'writtenAt':-1 } )
@@ -73,7 +58,7 @@ exports.getMyPost = (req, res) => {
 };
 exports.deletePost = (req, res) => {
 	const { post_id } = req.params;
-	Post.deleteOne({ _id : post_id }, function(err) {
+	Post.deleteOne({ _id : post_id },(err) => {
 		if (err) return res.status(500).json({ error: err });
 		return res.status(200).json({ message: 'post deleted successfully' });
 	});
@@ -82,14 +67,14 @@ exports.deletePost = (req, res) => {
 exports.updatePost = (req, res) => {
 	const { post_id } = req.params;
 	const { title, content } = req.body;
-	Post.findOne({ _id : post_id }, function(err, post) {
+	Post.findOne({ _id : post_id }, (err, post) => {
 		if (err) return res.status(500).json({ error: err });
 		if (!post) return res.status(404).json({ message:'no such post' });
 
 		post.title = title;
 		post.content = content;
 
-		post.save(function(err) {
+		post.save((err) => {
 			if (err) return res.status(500).json({ error: err });
 			return res.status(200).json({ message: 'post updated successfully' });
 		});
@@ -97,11 +82,11 @@ exports.updatePost = (req, res) => {
 };
 exports.getMyLikePost = (req, res) => {
 	let postArray = [];
-	User.findOne({ _id: req.decoded._id }, function(err, user) {
+	User.findOne({ _id: req.decoded._id }, (err, user) => {
 		if (err) return res.status(500).json({ error: err });
 		if (!user) return res.status(404).json({ message:'no such user' });
 		// for(let i=0; i<user.likePost.length; i++) {
-			Post.find({ _id : {$in : user.likePost} }, function (err, post) {
+			Post.find({ _id : {$in : user.likePost} }, (err, post) => {
 				if (err) return res.status(500).json({ error: err });
 				if (!post) return res.status(404).json({ message:'no such post' });
 				return res.status(200).json({
@@ -114,17 +99,17 @@ exports.getMyLikePost = (req, res) => {
 
 exports.likePost = (req, res) => {
 	const { post_id } = req.params;
-	Post.findOne({ _id: post_id }, function(err, post) {
+	Post.findOne({ _id: post_id }, (err, post) => {
 		if (err) return res.status(500).json({ error: err });
 		if (!post) return res.status(404).json({ message:'no such post' });
 		post.likeCnt++;
-		post.save(function(err, newPost){
+		post.save( (err, newPost) => {
 			if (err) return res.status(500).json({ error: err });
-			User.findOne({ _id : req.decoded._id }, function(err, user){
+			User.findOne({ _id : req.decoded._id }, (err, user) => {
 				if (err) return res.status(500).json({ error: err });
 				if (!user) return res.status(404).json({ message:'no such user' });
 				user.likePost.push(newPost);
-				user.save(function(err){
+				user.save( (err) => {
 					if (err) return res.status(500).json({ error: err });
 					return res.status(200).json({ message: 'post liked successfully' });
 				});
@@ -135,11 +120,11 @@ exports.likePost = (req, res) => {
 
 exports.viewPost = (req, res) => {
 	const { post_id } = req.params;
-	Post.findOne({ _id: post_id }, function(err, post) {
+	Post.findOne({ _id: post_id }, (err, post) => {
 		if (err) return res.status(500).json({ error: err });
 		if (!post) return res.status(404).json({ message:'no such post' });
 		post.viewCnt++;
-		post.save(function(err, newPost){
+		post.save((err, newPost) => {
 			if (err) return res.status(500).json({ error: err });
 			return res.status(200).json({ message: 'post viewed successfully' });
 		});

@@ -6,7 +6,7 @@ exports.searchByTag = (req, res) => {
 	if (tag === undefined) {
 		return res.status(406).json({ message : 'parameter wrong' });
 	} else {
-		Post.find({ 'tags': { $elemMatch: { 'tag': tag } } }, function(err, post) {
+		Post.find({ 'tags': { $elemMatch: { 'tag': tag } } }, (err, post) => {
 			if (err) return res.status(500).json({ error: err });
 			if (!post) return res.status(404).json({ message: 'no such post' });
 			return res.status(200).json({
@@ -21,7 +21,7 @@ exports.searchByTitle = (req, res) => {
 	if (title === undefined) {
 		return res.status(406).json({ message : 'parameter wrong' });
 	} else {
-		Post.find({ 'title' : { $regex : '.*'+title+'.*' } }, function(err, post) {
+		Post.find({ 'title' : { $regex : '.*'+title+'.*' } }, (err, post) => {
 			if (err) return res.status(500).json({ error: err });
 			if (!post) return res.status(404).json({ message: 'no such post' });
 			return res.status(200).json({
@@ -36,7 +36,7 @@ exports.searchByContent = (req, res) => {
 	if (content === undefined) {
 		return res.status(406).json({ message : 'parameter wrong' });
 	} else {
-		Post.find({ 'content' : { $regex : '.*'+content+'.*' } }, function(err, post) {
+		Post.find({ 'content' : { $regex : '.*'+content+'.*' } }, (err, post) => {
 			if (err) return res.status(500).json({ error: err });
 			if (!post) return res.status(404).json({ message: 'no such post' });
 			return res.status(200).json({
