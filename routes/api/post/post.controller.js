@@ -6,7 +6,7 @@ const s3 = new AWS.S3();
 // Post 생성
 exports.makePost = (req, res) => {
 	const d = new Date();
-	d.setUTCHours(d.getUTCHours() - 4);
+	d.setUTCHours(d.getUTCHours() + 9);
 	const { title, content, base64, tags } = req.body;
 	const picUrl = 'https://s3.amazonaws.com/fashionpobucket/'+d.getFullYear()+'_'+d.getMonth()+'_'+d.getDate()+'_'+d.getTime()+'_'+d.getSeconds()+'_'+req.decoded._id+'.jpg';
 
@@ -19,7 +19,8 @@ exports.makePost = (req, res) => {
 			content,
 			tags,
 			picUrl,
-			writtenBy: req.decoded._id
+			writtenBy: req.decoded._id,
+			writtenAt: d
 		});
 		post.save(function(err, post) {
 			if (err) return res.status(500).json({ error:err });
