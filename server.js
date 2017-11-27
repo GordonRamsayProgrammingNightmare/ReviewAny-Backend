@@ -16,6 +16,9 @@ const port = process.env.PORT || 3000;
  EXPRESS CONFIGURATION
  ==========================*/
 const server = express();
+process.on('uncaughtException', function(err) {
+	console.log('Caught exception: ' + err);
+});
 server.use(cors());
 server.use(function(req, res, next) {
 	res.header('Access-Control-Allow-Origin', '*');
@@ -28,7 +31,25 @@ server.use(bodyParser.urlencoded({ extended:true,limit:'50mb' }));
 
 
 // print the request log on console
-server.use(morgan('dev'));
+server.use(morgan(':remote-addr'), function(req, res, next) {
+	next();
+});
+
+server.use(morgan(':method'), function(req, res, next) {
+	next();
+});
+
+server.use(morgan(':url'), function(req, res, next) {
+	next();
+});
+
+server.use(morgan(':date'), function(req, res, next) {
+	next();
+});
+
+server.use(morgan(':status'), function(req, res, next) {
+	next();
+});
 // set the secret key variable for jwt
 server.set('jwt-secret', config.secret);
 

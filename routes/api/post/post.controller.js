@@ -34,7 +34,7 @@ exports.makePost = (req, res) => {
 						return res.send({ message: 'upload success' });
 					}
 				});
-			})
+			});
 		});
 	});
 };
@@ -45,21 +45,21 @@ exports.getAllPosts = (req, res) => {
 			posts => {
 				res.status(200).json({
 					posts
-				})
+				});
 			}
-		)
+		);
 };
 exports.getMyPost = (req, res) => {
 	Post.find({ writtenBy : req.decoded._id })
 		.then(
 			posts => {
-				res.json({ posts })
+				res.json({ posts });
 			}
-		)
+		);
 };
 exports.deletePost = (req, res) => {
 	const { post_id } = req.params;
-	Post.deleteOne({ _id : post_id },(err) => {
+	Post.deleteOne({ _id : post_id }, (err) => {
 		if (err) return res.status(500).json({ error: err });
 		return res.status(200).json({ message: 'post deleted successfully' });
 	});
@@ -87,13 +87,13 @@ exports.getMyLikePost = (req, res) => {
 		if (err) return res.status(500).json({ error: err });
 		if (!user) return res.status(404).json({ message:'no such user' });
 		// for(let i=0; i<user.likePost.length; i++) {
-			Post.find({ _id : {$in : user.likePost} }, (err, post) => {
-				if (err) return res.status(500).json({ error: err });
-				if (!post) return res.status(404).json({ message:'no such post' });
-				return res.status(200).json({
-					posts: post
-				})
-			})
+		Post.find({ _id : { $in : user.likePost } }, (err, post) => {
+			if (err) return res.status(500).json({ error: err });
+			if (!post) return res.status(404).json({ message:'no such post' });
+			return res.status(200).json({
+				posts: post
+			});
+		});
 		// }
 	});
 };
@@ -114,10 +114,10 @@ exports.likePost = (req, res) => {
 					if (err) return res.status(500).json({ error: err });
 					return res.status(200).json({ message: 'post liked successfully' });
 				});
-			})
-		})
-	})
-}
+			});
+		});
+	});
+};
 
 exports.viewPost = (req, res) => {
 	const { post_id } = req.params;
@@ -129,5 +129,5 @@ exports.viewPost = (req, res) => {
 			if (err) return res.status(500).json({ error: err });
 			return res.status(200).json({ message: 'post viewed successfully' });
 		});
-	})
-}
+	});
+};
