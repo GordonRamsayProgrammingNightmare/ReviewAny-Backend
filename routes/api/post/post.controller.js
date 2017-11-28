@@ -121,6 +121,15 @@ exports.likePost = (req, res) => {
 	});
 };
 
+exports.getPostById = (req, res) => {
+	const { post_id } = req.params;
+	Post.findOne({ _id: post_id }, (err, post) => {
+		if (err) return res.status(500).json({ error: err });
+		if (!post) return res.status(404).json({ message: 'no such post' });
+		return res.status(200).json({ post: post });
+	});
+};
+
 exports.viewPost = (req, res) => {
 	const { post_id } = req.params;
 	Post.findOne({ _id: post_id }, (err, post) => {

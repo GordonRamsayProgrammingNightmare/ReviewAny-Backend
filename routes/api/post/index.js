@@ -7,6 +7,8 @@ const controller = require('./post.controller');
 router.post('', controller.makePost);
 // 나의 포스트를 다 보여준다.
 router.get('', controller.getMyPost);
+// 포스트를 아이디로 검색
+router.get('/one/:post_id', controller.getPostById);
 // 모든 포스트를 다 보여준다.
 router.get('/all', controller.getAllPosts);
 // 포스트를 아이디로 삭제한다.
