@@ -50,12 +50,17 @@ exports.getAllPosts = (req, res) => {
 		);
 };
 exports.getMyPost = (req, res) => {
-	Post.find({ writtenBy : req.decoded._id })
-		.then(
-			posts => {
-				res.json({ posts });
-			}
-		);
+	User.findOne({ _id: req.decoded._id }, (err, user) => {
+		if (err) return res.status(500).json({ error: err });
+		if (!user) return res.status(404).json({ message: 'no such user' });
+		Post.find({ _id: { $in: user.myPost } }, (err, post) => {
+			if (err) return res.status(500).json({ error: err });
+			if (!post) return res.status(404).json({ message: 'no such post' });
+			return res.status(200).json({
+				posts: post
+			});
+		});
+	});
 };
 exports.deletePost = (req, res) => {
 	const { post_id } = req.params;
@@ -82,11 +87,9 @@ exports.updatePost = (req, res) => {
 	});
 };
 exports.getMyLikePost = (req, res) => {
-	let postArray = [];
 	User.findOne({ _id: req.decoded._id }, (err, user) => {
 		if (err) return res.status(500).json({ error: err });
 		if (!user) return res.status(404).json({ message:'no such user' });
-		// for(let i=0; i<user.likePost.length; i++) {
 		Post.find({ _id : { $in : user.likePost } }, (err, post) => {
 			if (err) return res.status(500).json({ error: err });
 			if (!post) return res.status(404).json({ message:'no such post' });
@@ -94,7 +97,6 @@ exports.getMyLikePost = (req, res) => {
 				posts: post
 			});
 		});
-		// }
 	});
 };
 
@@ -125,7 +127,7 @@ exports.viewPost = (req, res) => {
 		if (err) return res.status(500).json({ error: err });
 		if (!post) return res.status(404).json({ message:'no such post' });
 		post.viewCnt++;
-		post.save((err, newPost) => {
+		post.save((err) => {
 			if (err) return res.status(500).json({ error: err });
 			return res.status(200).json({ message: 'post viewed successfully' });
 		});
