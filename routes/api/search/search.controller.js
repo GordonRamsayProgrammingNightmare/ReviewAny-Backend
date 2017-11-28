@@ -1,5 +1,5 @@
 const Post = require('../../../models/post');
-const User = require('../../../models/user');
+// const User = require('../../../models/user');
 
 exports.searchByTag = (req, res) => {
 	const { tag } = req.params;
@@ -11,10 +11,10 @@ exports.searchByTag = (req, res) => {
 			if (!post) return res.status(404).json({ message: 'no such post' });
 			return res.status(200).json({
 				post: post
-			})
+			});
 		});
 	}
-}
+};
 
 exports.searchByTitle = (req, res) => {
 	const { title } = req.params;
@@ -26,10 +26,10 @@ exports.searchByTitle = (req, res) => {
 			if (!post) return res.status(404).json({ message: 'no such post' });
 			return res.status(200).json({
 				post: post
-			})
+			});
 		});
 	}
-}
+};
 
 exports.searchByContent = (req, res) => {
 	const { content } = req.params;
@@ -41,7 +41,7 @@ exports.searchByContent = (req, res) => {
 			if (!post) return res.status(404).json({ message: 'no such post' });
 			return res.status(200).json({
 				post: post
-			})
+			});
 		});
 	}
-}
+};
