@@ -27,6 +27,7 @@ exports.makePost = (req, res) => {
 			let buf = new Buffer(base64.replace(/^data:image\/\w+;base64,/, ''), 'base64');
 			user.myPost.push(post._id);
 			user.save((err) => {
+				if (err) return res.status(500).json({ error: err });
 				s3.putObject({ Bucket: 'fashionpobucket', Key: d.getFullYear()+'_'+d.getMonth()+'_'+d.getDate()+'_'+d.getTime()+'_'+d.getSeconds()+'_'+req.decoded._id+'.jpg', Body: buf, ACL: 'public-read' }, function(err) {
 					if (err) {
 						return res.send({ message: err });
