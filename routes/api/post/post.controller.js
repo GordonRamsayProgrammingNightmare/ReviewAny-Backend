@@ -146,22 +146,26 @@ exports.deleteLike = (req, res) => {
 
 exports.getPostById = (req, res) => {
 	const { post_id } = req.params;
-	Post.findOne({ _id: post_id }, (err, post) => {
-		if (err) return res.status(500).json({ error: err });
-		if (!post) return res.status(404).json({ message: 'no such post' });
-		return res.status(200).json({ post: post });
-	});
+	Post.findOne({ _id: post_id })
+		.then((post) => {
+			return res.status(200).json({ post: post });
+		})
+		.catch((err) => {
+			return res.status(500).json({ error: err });
+		});
 };
 
 exports.viewPost = (req, res) => {
 	const { post_id } = req.params;
-	Post.findOne({ _id: post_id }, (err, post) => {
-		if (err) return res.status(500).json({ error: err });
-		if (!post) return res.status(404).json({ message:'no such post' });
-		post.viewCnt++;
-		post.save((err) => {
-			if (err) return res.status(500).json({ error: err });
-			return res.status(200).json({ message: 'post viewed successfully' });
+	Post.findOne({ _id: post_id })
+		.then((post) => {
+			post.viewCnt++;
+			post.save((err) => {
+				if (err) return res.status(500).json({ error: err });
+				return res.status(200).json({ message: 'post viewed successfully' });
+			});
+		})
+		.catch((err) => {
+			return res.status(500).json({ error: err });
 		});
-	});
 };
