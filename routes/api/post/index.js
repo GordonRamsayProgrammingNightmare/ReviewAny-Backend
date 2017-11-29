@@ -20,6 +20,8 @@ router.put('/:post_id', controller.updatePost);
 
 // 포스트 좋아요를 누른다.
 router.post('/like/:post_id', controller.likePost);
+// 포스트 좋아요를 취소한다.
+router.delete('/like/:post_id', controller.deleteLike);
 // 내가 좋아요 누른 포스트를 보여준다.
 router.get('/like', controller.getMyLikePost);
 // 포스트를 본다.

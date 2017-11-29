@@ -122,6 +122,28 @@ exports.likePost = (req, res) => {
 	});
 };
 
+exports.deleteLike = (req, res) => {
+	const { post_id } = req.params;
+	Post.findOne({ _id: post_id }, (err, post) => {
+		if (err) return res.status(500).json({ error: err });
+		if (!post) return res.status(404).json({ message: 'no such post' });
+		post.likeCnt--;
+		post.save((err) => {
+			if (err) return res.status(500).json({ error: err });
+			User.findOne({ _id: req.decoded._id }, (err, user) => {
+				if (err) return res.status(500).json({ error: err });
+				if (!user) return res.status(404).json({ message: 'no such user' });
+				let index = user.likePost.indexOf(post_id);
+				user.likePost.splice(index, 1);
+				user.save((err) => {
+					if (err) return res.status(500).json({ error: err });
+					return res.status(200).json({ message: 'post liked deleted successfully' });
+				});
+			});
+		});
+	});
+};
+
 exports.getPostById = (req, res) => {
 	const { post_id } = req.params;
 	Post.findOne({ _id: post_id }, (err, post) => {
