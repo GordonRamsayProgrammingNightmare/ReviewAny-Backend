@@ -8,7 +8,13 @@ exports.makePost = (req, res) => {
 	const d = new Date();
 	d.setUTCHours(d.getUTCHours() + 9);
 	const { title, content, base64, tags } = req.body;
-	const picUrl = 'https://s3.amazonaws.com/fashionpobucket/'+d.getFullYear()+'_'+d.getMonth()+'_'+d.getDate()+'_'+d.getTime()+'_'+d.getSeconds()+'_'+req.decoded._id+'.jpg';
+	const picUrl = 'https://s3.amazonaws.com/fashionpobucket/'
+									+d.getFullYear()+'_'
+									+d.getMonth()+'_'
+									+d.getDate()+'_'
+									+d.getTime()+'_'
+									+d.getSeconds()+'_'
+									+req.decoded._id+'.jpg';
 
 	User.findOne({ _id : req.decoded._id }, function(err, user) {
 		if (err) return res.status(500).json({ error: err });
@@ -28,7 +34,17 @@ exports.makePost = (req, res) => {
 			user.myPost.push(post._id);
 			user.save((err) => {
 				if (err) return res.status(500).json({ error: err });
-				s3.putObject({ Bucket: 'fashionpobucket', Key: d.getFullYear()+'_'+d.getMonth()+'_'+d.getDate()+'_'+d.getTime()+'_'+d.getSeconds()+'_'+req.decoded._id+'.jpg', Body: buf, ACL: 'public-read' }, function(err) {
+				s3.putObject({ 
+					Bucket: 'fashionpobucket', 
+					Key: d.getFullYear()+'_'
+					+d.getMonth()+'_'
+					+d.getDate()+'_'
+					+d.getTime()+'_'
+					+d.getSeconds()+'_'
+					+req.decoded._id+'.jpg', 
+					Body: buf, 
+					ACL: 'public-read' 
+				}, function(err) {
 					if (err) {
 						return res.send({ message: err });
 					} else {
@@ -67,7 +83,9 @@ exports.deletePost = (req, res) => {
 	const { post_id } = req.params;
 	Post.deleteOne({ _id : post_id }, (err) => {
 		if (err) return res.status(500).json({ error: err });
-		return res.status(200).json({ message: 'post deleted successfully' });
+		return res.status(200).json({ 
+			message: 'post deleted successfully' 
+		});
 	});
 };
 
@@ -83,7 +101,9 @@ exports.updatePost = (req, res) => {
 
 		post.save((err) => {
 			if (err) return res.status(500).json({ error: err });
-			return res.status(200).json({ message: 'post updated successfully' });
+			return res.status(200).json({ 
+				message: 'post updated successfully' 
+			});
 		});
 	});
 };
@@ -103,23 +123,29 @@ exports.getMyLikePost = (req, res) => {
 
 exports.likePost = (req, res) => {
 	const { post_id } = req.params;
-	Post.findOne({ _id: post_id }, (err, post) => {
-		if (err) return res.status(500).json({ error: err });
-		if (!post) return res.status(404).json({ message:'no such post' });
-		post.likeCnt++;
-		post.save( (err, newPost) => {
-			if (err) return res.status(500).json({ error: err });
-			User.findOne({ _id : req.decoded._id }, (err, user) => {
-				if (err) return res.status(500).json({ error: err });
-				if (!user) return res.status(404).json({ message:'no such user' });
-				user.likePost.push(newPost);
-				user.save( (err) => {
-					if (err) return res.status(500).json({ error: err });
-					return res.status(200).json({ message: 'post liked successfully' });
+	Post.findOne({ _id: post_id })
+		.then((post) => {
+			post.likeCnt++;
+			post.save();
+		})
+		.catch((err) => {
+			return res.status(500).json({ error: err });
+		})
+		.then((newPost) => {
+			User.findOne({ _id: req.decoded._id })
+				.then((user) => {
+					user.likePost.push(newPost);
+					user.save((err) => {
+						if (err) return res.status(500).json({ error: err });
+						return res.status(200).json({ 
+							message: 'post liked successfully' 
+						});
+					});
 				});
-			});
+		})
+		.catch((err) => {
+			return res.status(500).json({ error: err });
 		});
-	});
 };
 
 exports.deleteLike = (req, res) => {
@@ -137,7 +163,9 @@ exports.deleteLike = (req, res) => {
 				user.likePost.splice(index, 1);
 				user.save((err) => {
 					if (err) return res.status(500).json({ error: err });
-					return res.status(200).json({ message: 'post liked deleted successfully' });
+					return res.status(200).json({ message: 
+						'post liked deleted successfully' 
+					});
 				});
 			});
 		});
@@ -162,7 +190,9 @@ exports.viewPost = (req, res) => {
 			post.viewCnt++;
 			post.save((err) => {
 				if (err) return res.status(500).json({ error: err });
-				return res.status(200).json({ message: 'post viewed successfully' });
+				return res.status(200).json({ message: 
+					'post viewed successfully' 
+				});
 			});
 		})
 		.catch((err) => {
