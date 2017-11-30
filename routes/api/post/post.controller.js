@@ -126,22 +126,18 @@ exports.likePost = (req, res) => {
 	Post.findOne({ _id: post_id })
 		.then((post) => {
 			post.likeCnt++;
-			post.save();
-		})
-		.catch((err) => {
-			return res.status(500).json({ error: err });
-		})
-		.then((newPost) => {
-			User.findOne({ _id: req.decoded._id })
-				.then((user) => {
-					user.likePost.push(newPost);
-					user.save((err) => {
-						if (err) return res.status(500).json({ error: err });
-						return res.status(200).json({ 
-							message: 'post liked successfully' 
+			post.save( (err, newPost) => {
+				User.findOne({ _id: req.decoded._id })
+					.then((user) => {
+						user.likePost.push(newPost);
+						user.save((err) => {
+							if (err) return res.status(500).json({ error: err });
+							return res.status(200).json({
+								message: 'post liked successfully'
+							});
 						});
 					});
-				});
+			});
 		})
 		.catch((err) => {
 			return res.status(500).json({ error: err });
