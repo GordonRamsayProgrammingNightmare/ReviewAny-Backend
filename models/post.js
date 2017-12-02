@@ -11,7 +11,11 @@ const Post = new Schema({
 	writtenBy: { type: ObjectId, ref:'User' },
 	writtenAt: Date,
 	likeCnt: { type: Number, default: 0 },
-	viewCnt: { type: Number, default: 0 }
+	viewCnt: { type: Number, default: 0 },
+	comments: [{ 
+		comment: String,
+		writtenBy: { type: ObjectId, ref: 'User' },
+	}]
 });
 
 module.exports = mongoose.model('Post', Post);

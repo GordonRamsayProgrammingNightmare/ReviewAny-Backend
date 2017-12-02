@@ -195,3 +195,47 @@ exports.viewPost = (req, res) => {
 			return res.status(500).json({ error: err });
 		});
 };
+
+exports.commentCreate = (req, res) => {
+	const { post_id, comment } = req.body;
+
+	Post.findOne({ _id: post_id })
+		.then((post) => {
+			let content = {
+				comment : comment,
+				writtenBy : req.decoded._id
+			};
+			post.comments.push(content);
+			return post.save();
+		})
+		.then((post) => {
+			if (!post) return res.status(406).json({ message: 'no such post' });
+			return res.status(200).json({ message : 'comment successfully created' });
+		})
+		.catch((err) => {
+			return res.status(500).json({ error: err });
+		});
+};
+
+exports.commentDelete = (req, res) => {
+	const { post_id } = req.body;
+	const { comment_id } = req.params;
+	Post.findOne({ _id : post_id })
+		.then((post) => {
+			for (let i=0;i<post.comments.length;i++) {
+				if (post.comments[i].writtenBy == req.decoded._id && post.comments[i]._id == comment_id) {
+					console.log('yes');
+					post.comments.splice(i, 1);
+					return post.save();
+					// break;
+				}
+			}
+		})
+		.then((post) => {
+			if (!post) return res.status(406).json({ message: 'no such post' });
+			return res.status(200).json({ message: 'comment successfully deleted' });
+		})
+		.catch((err) => {
+			return res.status(500).json({ error: err });
+		});
+};
