@@ -6,6 +6,7 @@ router.get('', controller.getUserById);
 // User ID로 Username 받기
 router.get('/username/:user_id', controller.getUsernameById);
 // User profileImg 변경
+router.put('/update', controller.updateUserInfo);
 // User saySomething 변경
 // User username 변경
 

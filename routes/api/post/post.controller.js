@@ -57,7 +57,7 @@ exports.makePost = (req, res) => {
 };
 
 exports.getAllPosts = (req, res) => {
-	Post.find({}).sort( { 'writtenAt':-1 } )
+	Post.find({}).sort( { '_id':-1 } )
 		.then(
 			posts => {
 				res.status(200).json({
