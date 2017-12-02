@@ -66,6 +66,7 @@ exports.getAllPosts = (req, res) => {
 			}
 		);
 };
+
 exports.getMyPost = (req, res) => {
 	User.findOne({ _id: req.decoded._id }, (err, user) => {
 		if (err) return res.status(500).json({ error: err });
@@ -199,21 +200,27 @@ exports.viewPost = (req, res) => {
 exports.commentCreate = (req, res) => {
 	const { post_id, comment } = req.body;
 
-	Post.findOne({ _id: post_id })
-		.then((post) => {
-			let content = {
-				comment : comment,
-				writtenBy : req.decoded._id
-			};
-			post.comments.push(content);
-			return post.save();
+	User.findOne({ _id: req.decoded._id })
+		.then((user) => {
+			return user.username;
 		})
-		.then((post) => {
-			if (!post) return res.status(406).json({ message: 'no such post' });
-			return res.status(200).json({ message : 'comment successfully created' });
-		})
-		.catch((err) => {
-			return res.status(500).json({ error: err });
+		.then((username) => {
+			Post.findOne({ _id: post_id })
+				.then((post) => {
+					let content = {
+						comment: comment,
+						username: username
+					};
+					post.comments.push(content);
+					return post.save();
+				})
+				.then((post) => {
+					if (!post) return res.status(406).json({ message: 'no such post' });
+					return res.status(200).json({ message: 'comment successfully created' });
+				})
+				.catch((err) => {
+					return res.status(500).json({ error: err });
+				});
 		});
 };
 

@@ -14,7 +14,7 @@ const Post = new Schema({
 	viewCnt: { type: Number, default: 0 },
 	comments: [{ 
 		comment: String,
-		writtenBy: { type: ObjectId, ref: 'User' },
+		username: { type: String, ref: 'User' },
 	}]
 });
 
