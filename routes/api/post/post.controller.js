@@ -238,17 +238,19 @@ exports.commentCreate = (req, res) => {
 
 exports.commentDelete = (req, res) => {
 	// const {  } = req.body;
-	const { post_id, comment_id } = req.params;
+	const { post_id, comment_id, username } = req.params;
+	console.log(post_id, comment_id);
 	Post.findOne({ _id : post_id })
 		.then((post) => {
+			if (!post) return res.status(406).json({ message: 'no such post' });
 			for (let i=0;i<post.comments.length;i++) {
-				if (post.comments[i].writtenBy == req.decoded._id && post.comments[i]._id == comment_id) {
-					console.log('yes');
+				if (post.comments[i].username == username && post.comments[i]._id == comment_id) {
+					// console.log('yes');		
 					post.comments.splice(i, 1);
 					return post.save();
-					// break;
 				}
 			}
+			console.log(post);
 		})
 		.then((post) => {
 			if (!post) return res.status(406).json({ message: 'no such post' });
