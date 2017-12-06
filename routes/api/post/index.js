@@ -30,6 +30,6 @@ router.post('/view/:post_id', controller.viewPost);
 // Comment CRD
 
 router.post('/comment', controller.commentCreate);
-router.delete('/comment/:comment_id', controller.commentDelete);
+router.delete('/comment/:post_id/:comment_id', controller.commentDelete);
 
 module.exports = router;

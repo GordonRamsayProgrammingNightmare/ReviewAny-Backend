@@ -237,8 +237,8 @@ exports.commentCreate = (req, res) => {
 };
 
 exports.commentDelete = (req, res) => {
-	const { post_id } = req.body;
-	const { comment_id } = req.params;
+	// const {  } = req.body;
+	const { post_id, comment_id } = req.params;
 	Post.findOne({ _id : post_id })
 		.then((post) => {
 			for (let i=0;i<post.comments.length;i++) {
