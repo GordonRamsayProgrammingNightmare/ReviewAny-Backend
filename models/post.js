@@ -15,7 +15,8 @@ const Post = new Schema({
 	comments: [{ 
 		comment: String,
 		username: { type: String, ref: 'User' },
-	}]
+	}],
+	imageTags: [{ type: String }]
 });
 
 module.exports = mongoose.model('Post', Post);

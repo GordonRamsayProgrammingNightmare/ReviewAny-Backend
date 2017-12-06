@@ -1,6 +1,8 @@
 const Post = require('../../../models/post');
 const User = require('../../../models/user');
 const AWS = require('aws-sdk');
+const vision = require('@google-cloud/vision');
+const client = new vision.ImageAnnotatorClient();
 AWS.config.region = 'us-east-1';
 const s3 = new AWS.S3();
 // Post 생성
@@ -8,13 +10,13 @@ exports.makePost = (req, res) => {
 	const d = new Date();
 	d.setUTCHours(d.getUTCHours() + 9);
 	const { title, content, base64, tags } = req.body;
-	const picUrl = 'https://s3.amazonaws.com/fashionpobucket/'
-									+d.getFullYear()+'_'
+	const picKey = d.getFullYear()+'_'
 									+d.getMonth()+'_'
 									+d.getDate()+'_'
 									+d.getTime()+'_'
 									+d.getSeconds()+'_'
 									+req.decoded._id+'.jpg';
+	const picUrl = 'https://s3.amazonaws.com/fashionpobucket/' + picKey;
 
 	User.findOne({ _id : req.decoded._id }, function(err, user) {
 		if (err) return res.status(500).json({ error: err });
@@ -36,18 +38,28 @@ exports.makePost = (req, res) => {
 				if (err) return res.status(500).json({ error: err });
 				s3.putObject({ 
 					Bucket: 'fashionpobucket', 
-					Key: d.getFullYear()+'_'
-					+d.getMonth()+'_'
-					+d.getDate()+'_'
-					+d.getTime()+'_'
-					+d.getSeconds()+'_'
-					+req.decoded._id+'.jpg', 
+					Key: picKey,
 					Body: buf, 
 					ACL: 'public-read' 
 				}, function(err) {
 					if (err) {
 						return res.send({ message: err });
 					} else {
+						client
+							.labelDetection(picUrl)
+							.then(results => {
+								const labels = results[0].labelAnnotations;
+								let labelArray = [];
+								labels.forEach(label => labelArray.push(label.description));
+								return labelArray;
+							})
+							.then((array) => {
+								post.imageTags = array;
+								return post.save();
+							})
+							.catch(err => {
+								console.error('ERROR:', err);
+							});
 						return res.send({ message: 'upload success' });
 					}
 				});

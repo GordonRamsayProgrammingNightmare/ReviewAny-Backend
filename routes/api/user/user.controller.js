@@ -31,7 +31,7 @@ exports.getUsernameById = (req, res) => {
 exports.updateUserInfo = (req, res) => {
 	const d = new Date();
 	d.setUTCHours(d.getUTCHours() + 9);
-	const { username, base64 } = req.body;
+	const { username, base64, saySomething } = req.body;
 	const picUrl = 'https://s3.amazonaws.com/fashionpobucket/'
 		+ d.getFullYear() + '_'
 		+ d.getMonth() + '_'
@@ -44,6 +44,7 @@ exports.updateUserInfo = (req, res) => {
 		.then((user) => {
 			user.username =  username;
 			user.profileImg = picUrl;
+			user.saySomething = saySomething;
 			user.save();
 		})
 		.then(() => {
