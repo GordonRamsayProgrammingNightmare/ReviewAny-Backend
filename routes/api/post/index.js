@@ -11,6 +11,10 @@ router.get('', controller.getMyPost);
 router.get('/one/:post_id', controller.getPostById);
 // 모든 포스트를 다 보여준다.
 router.get('/all', controller.getAllPosts);
+
+router.get('/all/like', controller.sortByLike);
+
+router.get('/all/view', controller.sortByView);
 // 포스트를 아이디로 삭제한다.
 router.delete('/:post_id', controller.deletePost);
 // 포스트를 아이디로 업데이트 한다.

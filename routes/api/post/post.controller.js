@@ -79,6 +79,28 @@ exports.getAllPosts = (req, res) => {
 		);
 };
 
+exports.sortByLike = (req, res) => {
+	Post.find({}).sort({ 'likeCnt': -1 })
+		.then(
+			posts => {
+				res.status(200).json({
+					posts
+				});
+			}
+		);
+};
+
+exports.sortByView = (req, res) => {
+	Post.find({}).sort({ 'viewCnt': -1 })
+		.then(
+			posts => {
+				res.status(200).json({
+					posts
+				});
+			}
+		);
+};
+
 exports.getMyPost = (req, res) => {
 	User.findOne({ _id: req.decoded._id }, (err, user) => {
 		if (err) return res.status(500).json({ error: err });
