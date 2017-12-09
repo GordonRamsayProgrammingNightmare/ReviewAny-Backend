@@ -39,6 +39,7 @@ exports.updateUserInfo = (req, res) => {
 	// if (username === undefined || base64 === undefined || saySomething === undefined) {
 	// 	return res.status(406).json({ message: 'parameter wrong' });
 	// } else {
+
 	const picUrl = 'https://s3.amazonaws.com/fashionpobucket/'
 			+ d.getFullYear() + '_'
 			+ d.getMonth() + '_'
@@ -46,41 +47,50 @@ exports.updateUserInfo = (req, res) => {
 			+ d.getTime() + '_'
 			+ d.getSeconds() + '_'
 			+ req.decoded._id + '_profile.jpg';
-	
-	User.findOne({ _id: req.decoded._id })
-		.then((user) => {
-			if (base64 == undefined) {
+	if (base64 === undefined) {
+		User.findOne({ _id: req.decoded._id })
+			.then((user) => {
 				user.username = username;
-				// user.profileImg = picUrl;
+				user.profileImg = picUrl;
 				user.saySomething = saySomething;
-				user.save();
-			} else {
+				return user.save();
+			})
+			.then((err) => {
+				if (err) {
+					return res.send({ message: err });
+				} else {
+					return res.send({ message: 'success' });
+				}
+			});
+	}	else {
+		User.findOne({ _id: req.decoded._id })
+			.then((user) => {
 				user.username = username;
 				user.profileImg = picUrl;
 				user.saySomething = saySomething;
 				user.save();
-			}
-			
-		})
-		.then(() => {
-			let buf = new Buffer(base64.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-			s3.putObject({
-				Bucket: 'fashionpobucket',
-				Key: d.getFullYear() + '_'
+			})
+			.then(() => {
+				let buf = new Buffer(base64.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+				s3.putObject({
+					Bucket: 'fashionpobucket',
+					Key: d.getFullYear() + '_'
 						+ d.getMonth() + '_'
 						+ d.getDate() + '_'
 						+ d.getTime() + '_'
 						+ d.getSeconds() + '_'
 						+ req.decoded._id + '_profile.jpg',
-				Body: buf,
-				ACL: 'public-read'
-			}, (err) => {
-				if (err) {
-					return res.send({ message: err });
-				} else {
-					return res.send({ message: 'upload success' });
-				}
+					Body: buf,
+					ACL: 'public-read'
+				}, (err) => {
+					if (err) {
+						return res.send({ message: err });
+					} else {
+						return res.send({ message: 'upload success' });
+					}
+				});
 			});
-		});
+	}
+	
 	// }
 };
