@@ -16,6 +16,21 @@ exports.searchByTag = (req, res) => {
 	}
 };
 
+exports.searchByImage = (req, res) => {
+	const { imageTag } = req.params;
+	if (imageTag === undefined) {
+		return res.status(406).json({ message: 'parameter wrong' });
+	} else {
+		Post.find({ imageTags: imageTag }, (err, post) => {
+			if (err) return res.status(500).json({ error: err });
+			if (!post) return res.status(404).json({ message: 'no such post' });
+			return res.status(200).json({
+				post: post
+			});
+		});
+	}
+};
+
 exports.searchByTitle = (req, res) => {
 	const { title } = req.params;
 	if (title === undefined) {
