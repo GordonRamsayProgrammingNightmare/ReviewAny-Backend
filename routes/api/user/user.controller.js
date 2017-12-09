@@ -51,7 +51,7 @@ exports.updateUserInfo = (req, res) => {
 		User.findOne({ _id: req.decoded._id })
 			.then((user) => {
 				user.username = username;
-				user.profileImg = picUrl;
+				// user.profileImg = picUrl;
 				user.saySomething = saySomething;
 				return user.save();
 			})
